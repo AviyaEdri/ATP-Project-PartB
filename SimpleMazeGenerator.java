@@ -1,5 +1,6 @@
 package algorithms.MazeGenerators;
 
+import java.util.Arrays;
 import java.util.Random;
 /**
  * This class generates a simple maze with the specified number of rows and columns.
@@ -15,24 +16,25 @@ public class SimpleMazeGenerator extends AMazeGenerator {
         int[][] mazeArray = new int[rows][columns]; // Initialize the maze array
 
         for(int i =0; i < rows; i++){
-            for(int j = 0; j < columns; j++){
-                mazeArray[i][j] = 1; // Fill the maze with walls (1)
-            }
+            Arrays.fill(mazeArray[i], 1); // Fill the maze with walls (1)
         }
 
-        int k = 0, l =0;
-        while (k < rows && l < columns){
-            mazeArray[k][l] = 0; // Set the current cell to empty (0)
-            if(k < rows -1)
-                k++; // Move down
-            if(l < columns -1) {
-                mazeArray[k][l] = 0; // Set the next cell to empty (0)
-                l++; // Move right
-            }
+        int x = 0, y =0;
+        while (y < columns){
+            mazeArray[x][y] = 0; // Set the cell to empty (0)
+            y++; // Move to the next column
         }
+        y = columns -1; // Reset y to the last column
+        x++;
+
+        while (x < rows){
+            mazeArray[x][y] = 0; // Set the cell to empty (0)
+            x++; // Move to the next row
+        }
+
 
         Random random = new Random(); // Create a random number generator
-        double chance = 0.8; // Set the chance of making a wall empty
+        double chance = 0.5; // Set the chance of making a wall empty
 
         for (int i = 0; i < rows; i++){
             for(int j =0; j < columns; j++){
