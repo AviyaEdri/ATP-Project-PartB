@@ -1,6 +1,6 @@
-package algorithms.MazeGenerators;
+package algorithms.mazeGenerators;
 
-public abstract class AMazeGenerator implements IMazeGenerator{
+public abstract class AMazeGenerator implements IMazeGenerator {
     /**
      * This function generates a maze with the given dimensions.
      *

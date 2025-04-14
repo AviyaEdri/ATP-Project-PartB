@@ -1,4 +1,4 @@
-package algorithms.MazeGenerators;
+package algorithms.mazeGenerators;
 
 public class Position {
     private int row; // Row index of the position

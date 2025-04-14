@@ -1,4 +1,4 @@
-package algorithms.MazeGenerators;
+package algorithms.mazeGenerators;
 
 public class Maze {
     private int[][] maze; // 2D array representing the maze

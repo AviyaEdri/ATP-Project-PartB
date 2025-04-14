@@ -1,4 +1,4 @@
-package algorithms.MazeGenerators;
+package algorithms.mazeGenerators;
 
 import java.util.Arrays;
 import java.util.Random;

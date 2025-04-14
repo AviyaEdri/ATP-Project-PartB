@@ -1,4 +1,4 @@
-package algorithms.MazeGenerators;
+package algorithms.mazeGenerators;
 
 public interface IMazeGenerator {
     /**

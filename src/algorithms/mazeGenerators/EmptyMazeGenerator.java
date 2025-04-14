@@ -1,9 +1,10 @@
-package algorithms.MazeGenerators;
+package algorithms.mazeGenerators;
+
 /**
  * This class generates an empty maze with the specified number of rows and columns.
  * The maze is represented as a 2D array filled with zeros.
  */
-public class EmptyMazeGenerator extends AMazeGenerator{
+public class EmptyMazeGenerator extends AMazeGenerator {
     @Override
     public Maze generate(int rows, int columns) {
         Maze maze =  new Maze(); // Create a new maze object with the specified dimensions
