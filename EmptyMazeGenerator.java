@@ -1,4 +1,4 @@
-package algorithms.MazeGenerators;
+package algorithms.mazeGenerators;
 /**
  * This class generates an empty maze with the specified number of rows and columns.
  * The maze is represented as a 2D array filled with zeros.
