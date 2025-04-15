@@ -14,11 +14,11 @@ public class Solution {
         solutionPath = new ArrayList<>();
     }
 
-    public void setSolutionPath(List<AState> path) {
+    public void setSolutionPath(ArrayList<AState> path) {
         this.solutionPath = path;
     }
 
-    public List<AState> getSolutionPath() {
+    public ArrayList<AState> getSolutionPath() {
         return solutionPath;
     }
 
