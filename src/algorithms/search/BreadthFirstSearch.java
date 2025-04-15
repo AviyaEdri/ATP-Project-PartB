@@ -44,7 +44,7 @@ public class BreadthFirstSearch extends ASearchingAlgorithm {
 
     // Helper method to reconstruct the solution path from goal to start
     private Solution reconstructSolution(AState goalState) {
-        List<AState> path = new ArrayList<>();
+        ArrayList<AState> path = new ArrayList<>();
         AState current = goalState;
         while (current != null) {
             path.add(0, current);  // Insert at the beginning of the list

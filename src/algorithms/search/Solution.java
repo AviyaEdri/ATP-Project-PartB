@@ -8,7 +8,7 @@ import java.util.List;
  * It stores the path (a list of states) from the start state to the goal state.
  */
 public class Solution {
-    private List<AState> solutionPath;
+    private ArrayList<AState> solutionPath;
 
     public Solution() {
         solutionPath = new ArrayList<>();
