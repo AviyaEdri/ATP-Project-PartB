@@ -21,6 +21,13 @@ public class Position {
         return column; // Return the column index
     }
 
+    public boolean equals(Position position) {
+        if (row == position.getRowIndex() && column == position.getColumnIndex()){
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Returns a string representation of the position in the format "{row,column}".
      *

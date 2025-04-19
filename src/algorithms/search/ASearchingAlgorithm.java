@@ -7,6 +7,7 @@ package algorithms.search;
  */
 public abstract class ASearchingAlgorithm implements ISearchingAlgorithm {
     protected int numberOfNodesEvaluated;
+    protected String name;
 
     public ASearchingAlgorithm() {
         numberOfNodesEvaluated = 0;
@@ -23,5 +24,5 @@ public abstract class ASearchingAlgorithm implements ISearchingAlgorithm {
     public abstract Solution solve(ISearchable domain);
 
     @Override
-    public abstract String getName();
+    public String getName() {return name;};
 }

@@ -40,4 +40,19 @@ public abstract class AState {
     public String toString() {
         return state;
     }
+
+    @Override
+    public boolean equals(Object other){
+        if (!(other instanceof AState))
+            return false;
+        AState state = (AState) other;
+        return this.state.equals(state.state);
+    }
+
+    @Override
+    public int hashCode(){
+        return state.hashCode();
+    }
+
+
 }

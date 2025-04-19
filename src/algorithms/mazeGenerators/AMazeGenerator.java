@@ -23,4 +23,7 @@ public abstract class AMazeGenerator implements IMazeGenerator {
         long endTime = System.currentTimeMillis(); // End measuring time
         return endTime - startTime; // Calculate the elapsed time
     }
+
+    @Override
+    public abstract boolean possiblePath(Maze maze);
 }

@@ -8,6 +8,9 @@ import java.util.*;
  */
 public class BestFirstSearch extends ASearchingAlgorithm {
 
+    public BestFirstSearch(){
+        this.name = "Best First Search";
+    }
     @Override
     public Solution solve(ISearchable domain) {
         numberOfNodesEvaluated = 0;
@@ -64,10 +67,5 @@ public class BestFirstSearch extends ASearchingAlgorithm {
         Solution sol = new Solution();
         sol.setSolutionPath(path);
         return sol;
-    }
-
-    @Override
-    public String getName() {
-        return "Best First Search";
     }
 }

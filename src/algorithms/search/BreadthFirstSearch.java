@@ -7,6 +7,10 @@ import java.util.*;
  */
 public class BreadthFirstSearch extends ASearchingAlgorithm {
 
+    public BreadthFirstSearch(){
+        this.name = "Breadth First Search";
+    }
+
     @Override
     public Solution solve(ISearchable domain) {
         numberOfNodesEvaluated = 0;
@@ -53,10 +57,5 @@ public class BreadthFirstSearch extends ASearchingAlgorithm {
         Solution sol = new Solution();
         sol.setSolutionPath(path);
         return sol;
-    }
-
-    @Override
-    public String getName() {
-        return "Breadth First Search";
     }
 }

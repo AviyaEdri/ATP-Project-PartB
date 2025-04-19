@@ -1,5 +1,7 @@
 package algorithms.search;
 
+import algorithms.mazeGenerators.Position;
+
 /**
  * This class represents a state in a maze,
  * holding the row and column of the current position.
@@ -7,12 +9,14 @@ package algorithms.search;
 public class MazeState extends AState {
     private int row;
     private int col;
+    private Position position;
 
     public MazeState(int row, int col) {
         // The state string represents the position, e.g., "[row,col]"
         super("[" + row + "," + col + "]");
         this.row = row;
         this.col = col;
+        this.position = new Position(row,col);
     }
 
     public int getRow() {
@@ -42,4 +46,9 @@ public class MazeState extends AState {
     public int hashCode() {
         return 31 * row + col;
     }
+
+    public Position getPosition() {
+        return this.position;
+    }
+
 }

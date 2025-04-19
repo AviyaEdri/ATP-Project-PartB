@@ -60,14 +60,14 @@ public class MyMazeGenerator extends AMazeGenerator {
         Position start = openEdgeNear(innerStart, maze);
         Position goal = openEdgeNear(innerGoal, maze);
 
-        Maze Mymaze = new Maze();
-        Mymaze.setRows(row); // Set the number of rows
-        Mymaze.setColumns(col); // Set the number of columns
-        Mymaze.setMaze(maze); // Set the maze array
-        Mymaze.setStartPosition(start);
-        Mymaze.setGoalPosition(goal);
+        Maze Mymaze = new Maze(row,col);
 
         return Mymaze; // Return the generated maze
+    }
+
+    @Override
+    public boolean possiblePath(Maze maze) {
+        return false;
     }
 
     private void addWalls(int[][] maze, int row, int col, List<int[]> walls) {

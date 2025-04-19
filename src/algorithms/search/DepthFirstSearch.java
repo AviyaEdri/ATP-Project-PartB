@@ -7,6 +7,11 @@ import java.util.*;
  */
 public class DepthFirstSearch extends ASearchingAlgorithm {
 
+
+    public DepthFirstSearch(){
+        this.name = "Depth First Search";
+    }
+
     @Override
     public Solution solve(ISearchable domain) {
         numberOfNodesEvaluated = 0;
@@ -54,8 +59,4 @@ public class DepthFirstSearch extends ASearchingAlgorithm {
         return sol;
     }
 
-    @Override
-    public String getName() {
-        return "Depth First Search";
-    }
 }

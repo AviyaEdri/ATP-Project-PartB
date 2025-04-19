@@ -11,12 +11,12 @@ public class Maze {
      * Constructor for the Maze class.
      * Initializes the maze with null values and sets the number of rows and columns to 0.
      */
-    public Maze() {
-        this.maze = null; // Initialize the maze to null
-        this.rows = 0; // Set the number of rows to 0
-        this.columns = 0; // Set the number of columns to 0
-        this.startPosition = null; // Initialize the starting position to null
-        this.goalPosition = null; // Initialize the goal position to null
+    public Maze(int rows, int columns) {
+        this.maze = new int [rows][columns]; // Initialize the maze to null
+        this.rows = rows; // Set the number of rows to 0
+        this.columns = columns; // Set the number of columns to 0
+        this.startPosition = new Position(0,0); // Initialize the starting position to null
+        this.goalPosition = new Position(rows -1, columns-1); // Initialize the goal position to null
     }
 
 

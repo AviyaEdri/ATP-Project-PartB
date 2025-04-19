@@ -9,9 +9,7 @@ import java.util.Random;
 public class SimpleMazeGenerator extends AMazeGenerator {
     @Override
     public Maze generate(int rows, int columns){
-        Maze maze = new Maze(); // Create a new maze object
-        maze.setRows(rows); // Set the number of rows
-        maze.setColumns(columns); // Set the number of columns
+        Maze maze = new Maze(rows,columns); // Create a new maze object
 
         int[][] mazeArray = new int[rows][columns]; // Initialize the maze array
 
@@ -47,6 +45,49 @@ public class SimpleMazeGenerator extends AMazeGenerator {
         maze.setStartPosition(new Position(0,0)); // Set the starting position
         maze.setGoalPosition(new Position(rows - 1, columns - 1)); // Set the goal position
 
+        possiblePath(maze);
+
         return maze; // Return the generated maze
     }
+
+    @Override
+    public boolean possiblePath(Maze maze) {
+        int[][] maze_ = maze.getMaze();
+        Position start = maze.getStartPosition();
+        Position goal = maze.getGoalPosition();
+
+        int row = start.getRowIndex();
+        int col = start.getColumnIndex();
+        int goalRow = goal.getRowIndex();
+        int goalCol = goal.getColumnIndex();
+
+        java.util.Random rand = new java.util.Random();
+
+        // Carve out the path step by step until we reach the goal
+        while (row != goalRow || col != goalCol) {
+            maze_[row][col] = 0; // mark path
+
+            boolean canMoveRow = row != goalRow;
+            boolean canMoveCol = col != goalCol;
+
+            // Decide direction: if can move both, pick randomly
+            if (canMoveRow && canMoveCol) {
+                if (rand.nextBoolean()) {
+                    row += (goalRow > row) ? 1 : -1;
+                } else {
+                    col += (goalCol > col) ? 1 : -1;
+                }
+            } else if (canMoveRow) {
+                row += (goalRow > row) ? 1 : -1;
+            } else if (canMoveCol) {
+                col += (goalCol > col) ? 1 : -1;
+            }
+        }
+
+        // Mark the goal cell as part of the path
+        maze_[goalRow][goalCol] = 0;
+
+        return true;
+    }
+
 }
