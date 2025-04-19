@@ -2,11 +2,14 @@ package test;
 import algorithms.mazeGenerators.IMazeGenerator;
 import algorithms.mazeGenerators.Maze;
 import algorithms.mazeGenerators.Position;
+import algorithms.mazeGenerators.SimpleMazeGenerator;
+import algorithms.mazeGenerators.EmptyMazeGenerator;
+
 
 public class RunMazeGenerator {
     public static void main(String[] args){
-        //testMazeGenerator(new EmptyMazeGenerator());
-        //testMazeGenerator(new SimpleMazeGenerator());
+        testMazeGenerator(new EmptyMazeGenerator());
+        testMazeGenerator(new SimpleMazeGenerator());
     }
 
     private static void testMazeGenerator(IMazeGenerator mazeGenerator) {
