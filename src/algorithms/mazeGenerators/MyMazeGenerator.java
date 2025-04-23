@@ -60,9 +60,12 @@ public class MyMazeGenerator extends AMazeGenerator {
         Position start = openEdgeNear(innerStart, maze);
         Position goal = openEdgeNear(innerGoal, maze);
 
-        Maze Mymaze = new Maze(row,col);
+        Maze Mymaze = new Maze(row, col);
+        Mymaze.setMaze(maze); // Set the maze array in the maze object
+        Mymaze.setStartPosition(start);
+        Mymaze.setGoalPosition(goal);
+        return Mymaze;
 
-        return Mymaze; // Return the generated maze
     }
 
     @Override

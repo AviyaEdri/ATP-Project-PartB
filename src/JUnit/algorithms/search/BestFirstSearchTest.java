@@ -1,4 +1,4 @@
-package JUnit.algorithms.search;
+package algorithms.search;
 
 import algorithms.mazeGenerators.Maze;
 import algorithms.search.AState;

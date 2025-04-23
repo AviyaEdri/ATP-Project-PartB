@@ -47,20 +47,31 @@ public class SearchableMaze implements ISearchable {
     }
 
     private void addNeighbor(int row, int col, ArrayList<AState> neighbors) {
-        if (maze.getMaze()[row][col] == 0) { // Check if the cell is open
-            neighbors.add(new MazeState(row, col)); // Add the neighbor state
+        if (isInBounds(row, col) && maze.getMaze()[row][col] == 0) {
+            neighbors.add(new MazeState(row, col));
         }
     }
 
+    private boolean isInBounds(int row, int col) {
+        return row >= 0 && row < maze.getRows() && col >= 0 && col < maze.getColumns();
+    }
+
+
     private void checkDiagonal(int row, int col, int fromRow, int fromCol, ArrayList<AState> list) {
-        if (maze.getMaze()[row][col] == 0) { // Check if the cell is open
-            if (maze.getMaze()[fromRow][col] == 0 && maze.getMaze()[row][fromCol] == 0) { // Check if the diagonal is open
-                int newRow = (row + fromRow) / 2; // Calculate the new row
-                int newCol = (col + fromCol) / 2; // Calculate the new column
-                if (maze.getMaze()[newRow][newCol] == 0) { // Check if the new cell is open
-                    list.add(new MazeState(newRow, newCol)); // Add the neighbor state
-                }
+        if (!isInBounds(row, col) || !isInBounds(fromRow, col) || !isInBounds(row, fromCol))
+            return;
+
+        if (maze.getMaze()[row][col] == 0 &&
+                maze.getMaze()[fromRow][col] == 0 &&
+                maze.getMaze()[row][fromCol] == 0) {
+
+            int newRow = (row + fromRow) / 2;
+            int newCol = (col + fromCol) / 2;
+
+            if (isInBounds(newRow, newCol) && maze.getMaze()[newRow][newCol] == 0) {
+                list.add(new MazeState(newRow, newCol));
             }
         }
     }
+
 }
