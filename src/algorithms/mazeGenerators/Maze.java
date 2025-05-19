@@ -18,6 +18,46 @@ public class Maze {
         this.startPosition = new Position(0,0); // Initialize the starting position to null
         this.goalPosition = new Position(rows -1, columns-1); // Initialize the goal position to null
     }
+    /**
+     * Constructor for the Maze class.
+     * Initializes the maze with a byte array.
+     * The first 4 bytes represent the number of rows, the next 4 bytes represent the number of columns,
+     * and the remaining bytes represent the maze data.
+     * @param byteArray A byte array representing the maze object.
+     */
+    public Maze(byte[] byteArray){
+        int index = 0; // Initialize the index to 0
+        rows = 0; // Initialize the number of rows to 0
+        columns = 0; // Initialize the number of columns to 0
+
+        // Convert the first 4 bytes to an integer for the number of rows
+        for (int i = 0; i < 4; i++) {
+            rows |= (byteArray[index++] & 0xFF) << (i * 8);
+        }
+
+        // Convert the next 4 bytes to an integer for the number of columns
+        for (int i = 0; i < 4; i++) {
+            columns |= (byteArray[index++] & 0xFF) << (i * 8);
+        }
+        maze = new int[rows][columns]; // Initialize the maze with the given dimensions
+
+        // Fill the maze with data from the byte array
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                maze[i][j] = byteArray[index++]; // Fill the maze with data from the byte array
+            }
+        }
+        int startRow = 0, startCol = 0;
+        int goalRow = 0, goalCol = 0;
+
+        for (int i = 0; i < 4; i++) startRow |= (byteArray[index++] & 0xFF) << (i * 8); // Convert the starting position to bytes
+        for (int i = 0; i < 4; i++) startCol |= (byteArray[index++] & 0xFF) << (i * 8); // Convert the starting position to bytes
+        for (int i = 0; i < 4; i++) goalRow |= (byteArray[index++] & 0xFF) << (i * 8); // Convert the goal position to bytes
+        for (int i = 0; i < 4; i++) goalCol |= (byteArray[index++] & 0xFF) << (i * 8); // Convert the goal position to bytes
+
+        startPosition = new Position(startRow, startCol);
+        goalPosition = new Position(goalRow, goalCol);
+    }
 
 
     public int[][] getMaze() {
@@ -75,5 +115,52 @@ public class Maze {
             }
             System.out.println(); // Move to the next line after printing a row
         }
+    }
+    /**
+     * Converts the maze object to a byte array.
+     * The first 4 bytes represent the number of rows, the next 4 bytes represent the number of columns,
+     * and the remaining bytes represent the maze data.
+     * @return A byte array representing the maze object.
+     */
+    public byte[] toByteArray(){
+        int size = (rows * columns) + 4 * 6; // Calculate the size of the byte array
+        byte[] byteArray = new byte[size]; // Create a new byte array
+        int index = 0; // Initialize the index to 0
+
+        // Convert the number of rows to bytes and store it in the byte array
+        for (int i = 0; i < 4; i++) {
+            byteArray[index++] = (byte) ((rows >> (i * 8)) & 0xFF);
+        }
+
+        // Convert the number of columns to bytes and store it in the byte array
+        for (int i = 0; i < 4; i++) {
+            byteArray[index++] = (byte) ((columns >> (i * 8)) & 0xFF);
+        }
+
+        // Convert the maze data to bytes and store it in the byte array
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                byteArray[index++] = (byte) maze[i][j];
+            }
+        }
+        // Convert the starting position to bytes and store it in the byte array
+        for (int i = 0; i < 4; i++) {
+            byteArray[index++] = (byte) ((startPosition.getRowIndex() >> (i * 8)) & 0xFF);
+        }
+        // Convert the starting position to bytes and store it in the byte array
+        for (int i = 0; i < 4; i++) {
+            byteArray[index++] = (byte) ((startPosition.getColumnIndex() >> (i * 8)) & 0xFF);
+        }
+
+        // Convert the goal position to bytes and store it in the byte array
+        for (int i = 0; i < 4; i++) {
+            byteArray[index++] = (byte) ((goalPosition.getRowIndex() >> (i * 8)) & 0xFF);
+        }
+
+        // Convert the goal position to bytes and store it in the byte array
+        for (int i = 0; i < 4; i++) {
+            byteArray[index++] = (byte) ((goalPosition.getColumnIndex() >> (i * 8)) & 0xFF);
+        }
+        return byteArray; // Return the byte array
     }
 }

@@ -37,4 +37,6 @@ public class Position {
     public String toString() {
         return "{" + row + "," + column + "}"; // Format the position as "{row,column}"
     }
+
+
 }
