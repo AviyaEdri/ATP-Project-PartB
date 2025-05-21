@@ -6,7 +6,7 @@ import java.io.OutputStream;
 public class MyCompressorOutputStream extends OutputStream {
     private OutputStream out;
 
-    public void MyCompressorOutputStream(OutputStream out1) {
+    public MyCompressorOutputStream(OutputStream out1) {
         this.out = out1;
     }
 

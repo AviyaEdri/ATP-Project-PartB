@@ -3,7 +3,7 @@ package IO;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class MyDecompressorInputStream {
+public class MyDecompressorInputStream extends InputStream {
     private InputStream in;
 
     public MyDecompressorInputStream(InputStream in) {
@@ -19,7 +19,7 @@ public class MyDecompressorInputStream {
      * @param byteArraay The byte array to read from the input stream.
      * @throws IOException If an I/O error occurs.
      */
-    public void read(byte[] byteArraay) throws IOException{
+    public int read(byte[] byteArraay) throws IOException{
         int index = 0; // Initialize the index to 0
 
         for(; index < 4 * 6; index++) { // Read the first 4 bytes
@@ -42,5 +42,6 @@ public class MyDecompressorInputStream {
                 byteArraay[index++] = (byte) ((b >> (7 - bit)) & 1); // Store the bits in the array
             }
         }
+        return 0;
     }
 }
