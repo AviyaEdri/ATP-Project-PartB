@@ -16,32 +16,47 @@ public class MyDecompressorInputStream extends InputStream {
      * This method reads a byte array from the input stream.
      * The first 24 bytes are read as is, and the remaining bits are packed into bytes.
      *
-     * @param byteArraay The byte array to read from the input stream.
+     * @param byteArray byte array to read from the input stream.
      * @throws IOException If an I/O error occurs.
      */
-    public int read(byte[] byteArraay) throws IOException{
-        int index = 0; // Initialize the index to 0
-
-        for(; index < 4 * 6; index++) { // Read the first 4 bytes
-            byteArraay[index++] = (byte) in.read(); // Read a byte and store it in the array
+    public int read(byte[] byteArray) throws IOException{
+        for (int i = 0; i < 8; i++) {
+            byteArray[i] = (byte) in.read(); // Read a byte and store it in the array
         }
 
-        int dataSize = byteArraay.length - index; // Calculate the size of the data
-        int fullBytes = dataSize / 8; // Calculate the number of full bytes
-        int remainingBits = dataSize % 8; // Calculate the number of remaining bits
+        int rows = 0, cols = 0; // Initialize rows and cols to 0
+        for (int i = 0; i < 4; i++) {
+            rows |= (byteArray[i] & 0xFF) << (i * 8); // Read the number of rows
+            cols |= (byteArray[4 + i] & 0xFF) << (i * 8); // Read the number of columns
+        }
 
-        for(int i = 0; i < fullBytes; i++) { // Read the full bytes
-            byte b = (byte) in.read(); // Read a byte from the input stream
-            for(int bit = 0; bit < 8; bit++) {
-                byteArraay[index++] = (byte) ((b >> (7 - bit)) & 1); // Store the bits in the array
+        int mazeSize = rows * cols; // Calculate the size of the maze
+        int mazeStart = 8; // Start index for maze data
+        int mazeEnd = mazeStart + mazeSize; // End index for maze data
+
+        int index = mazeStart; // Start index for maze data
+        int fullBytes = mazeSize / 8; // Number of full bytes in the maze data
+        int remainingBits = mazeSize % 8; // Number of remaining bits in the last byte
+
+        for (int i = 0; i < fullBytes; i++) {
+            int b = in.read();
+            for (int bit = 0; bit < 8; bit++) {
+                byteArray[index++] = (byte) ((b >> (7 - bit)) & 1); // Read the packed byte
             }
         }
-        if(remainingBits > 0) { // Read the remaining bits
-            byte b = (byte) in.read(); // Read a byte from the input stream
-            for(int bit = 0; bit < remainingBits; bit++) {
-                byteArraay[index++] = (byte) ((b >> (7 - bit)) & 1); // Store the bits in the array
+
+        if (remainingBits > 0) {
+            int b = in.read();
+            for (int bit = 0; bit < remainingBits; bit++) {
+                byteArray[index++] = (byte) ((b >> (7 - bit)) & 1); // Read the remaining bits
             }
         }
-        return 0;
+
+        for (int i = mazeEnd; i < byteArray.length; i++) {
+            byteArray[i] = (byte) in.read(); // Read the remaining bytes
+        }
+        return byteArray.length; // Return the number of bytes read
     }
 }
+
+
