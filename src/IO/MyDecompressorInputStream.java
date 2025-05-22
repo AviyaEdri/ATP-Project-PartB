@@ -19,8 +19,9 @@ public class MyDecompressorInputStream extends InputStream {
      * @param byteArray byte array to read from the input stream.
      * @throws IOException If an I/O error occurs.
      */
+
     public int read(byte[] byteArray) throws IOException{
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 24; i++) {
             byteArray[i] = (byte) in.read(); // Read a byte and store it in the array
         }
 
@@ -53,10 +54,15 @@ public class MyDecompressorInputStream extends InputStream {
         }
 
         for (int i = mazeEnd; i < byteArray.length; i++) {
-            byteArray[i] = (byte) in.read(); // Read the remaining bytes
+            int b = in.read();
+            if (b == -1) {
+                break; // End of stream
+            }
+            byteArray[i] = (byte) b; // Read the remaining bytes
         }
         return byteArray.length; // Return the number of bytes read
     }
 }
+
 
 

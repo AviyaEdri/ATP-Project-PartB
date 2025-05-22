@@ -58,6 +58,7 @@ public class Server {
     public void stop() {
         stop = true; // Set the stop flag to true
         threadPool.shutdown(); // Shutdown the thread pool
+
         System.out.println("Server on port " + port +" stopped"); // Print the server stop message
         try {
             threadPool.awaitTermination(ListeningIntervalMS, java.util.concurrent.TimeUnit.MILLISECONDS); // Wait for the threads to finish

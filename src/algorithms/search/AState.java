@@ -1,11 +1,13 @@
 package algorithms.search;
 
+import java.io.Serializable;
+
 /**
  * Abstract class representing a generic state within the search space.
  * It includes a description, a cost (the effort to reach this state),
  * and a reference to the preceding state (for reconstructing the path).
  */
-public abstract class AState {
+public abstract class AState implements Serializable {
     protected String state; // Unique state description or identifier
     protected double cost;  // Cost to reach this state
     protected AState cameFrom; // Pointer to the previous state for path reconstruction

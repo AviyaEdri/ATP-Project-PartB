@@ -1,5 +1,6 @@
 package algorithms.search;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,7 @@ import java.util.List;
  * This class represents the solution to a search problem.
  * It stores the path (a list of states) from the start state to the goal state.
  */
-public class Solution {
+public class Solution implements Serializable{
     private ArrayList<AState> solutionPath;
 
     public Solution() {

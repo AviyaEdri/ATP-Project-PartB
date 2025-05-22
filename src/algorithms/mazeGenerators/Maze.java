@@ -1,6 +1,8 @@
 package algorithms.mazeGenerators;
 
-public class Maze {
+import java.io.Serializable;
+
+public class Maze implements Serializable {
     private int[][] maze; // 2D array representing the maze
     private int rows; // Number of rows in the maze
     private int columns; // Number of columns in the maze
@@ -39,6 +41,11 @@ public class Maze {
         for (int i = 0; i < 4; i++) {
             columns |= (byteArray[index++] & 0xFF) << (i * 8);
         }
+        int size = (rows * columns) +  24; // Calculate the size of the maze
+        if (byteArray.length != size) {
+            throw new IllegalArgumentException("Invalid byte array size"); // Check if the byte array size is valid
+        }
+
         maze = new int[rows][columns]; // Initialize the maze with the given dimensions
 
         // Fill the maze with data from the byte array
