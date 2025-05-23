@@ -20,7 +20,7 @@ public class Server {
 
     public void start(){
         stop = false; // Initialize the stop flag to false
-        threadPool = Executors.newFixedThreadPool(10); // Create a thread pool with 10 threads
+        threadPool = Executors.newFixedThreadPool(Configuration.getInstance().getThereadPoolSize()); // Create a thread pool with the specified size
         new Thread(this::runServer).start(); // Start the server in a new thread
     }
 
@@ -58,7 +58,6 @@ public class Server {
     public void stop() {
         stop = true; // Set the stop flag to true
         threadPool.shutdown(); // Shutdown the thread pool
-
         System.out.println("Server on port " + port +" stopped"); // Print the server stop message
         try {
             threadPool.awaitTermination(ListeningIntervalMS, java.util.concurrent.TimeUnit.MILLISECONDS); // Wait for the threads to finish

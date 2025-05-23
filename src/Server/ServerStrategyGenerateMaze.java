@@ -3,10 +3,11 @@ package Server;
 import java.io.InputStream;
 import java.io.OutputStream;
 import IO.MyCompressorOutputStream;
-import algorithms.mazeGenerators.AMazeGenerator;
-import algorithms.mazeGenerators.Maze;
-import algorithms.mazeGenerators.MyMazeGenerator;
+import algorithms.mazeGenerators.*;
 import java.io.*;
+import Server.Configuration;
+
+
 
 public class ServerStrategyGenerateMaze implements IServerStrategy {
 
@@ -20,8 +21,24 @@ public class ServerStrategyGenerateMaze implements IServerStrategy {
             int rows = size[0]; // Get the number of rows
             int cols = size[1]; // Get the number of columns
 
-            AMazeGenerator mazeGenerator = new MyMazeGenerator(); // Create a maze generator
-            Maze maze = mazeGenerator.generate(rows, cols); // Generate the maze
+            String generatorName = Configuration.getInstance().getMazeGeneratingAlgorithm();
+            AMazeGenerator generator;
+
+            switch (generatorName) {
+                case "MyMazeGenerator":
+                    generator = new MyMazeGenerator();
+                    break;
+                case "SimpleMazeGenerator":
+                    generator = new SimpleMazeGenerator();
+                    break;
+                case "EmptyMazeGenerator":
+                    generator = new EmptyMazeGenerator();
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown maze generator: " + generatorName);
+            }
+
+            Maze maze = generator.generate(rows, cols); // Generate the maze
             byte[] mazeBytes = maze.toByteArray(); // Convert the maze to a byte array
             System.out.println("Original size: " + mazeBytes.length);
 

@@ -33,7 +33,7 @@ public class RunCommunicateWithServers {
         solveSearchProblemServer.stop();
     }
 
-    private static void CommunicateWithServer_MazeGenerating() {
+    public static void CommunicateWithServer_MazeGenerating() {
         try {
             Client client = new Client(InetAddress.getLocalHost().getHostAddress(), 5400, new IClientStrategy() {
                 @Override
@@ -41,7 +41,6 @@ public class RunCommunicateWithServers {
                     try {
                         ObjectOutputStream toServer = new ObjectOutputStream(outToServer);
                         ObjectInputStream fromServer = new ObjectInputStream(inFromServer);
-
                         toServer.flush();
 
                         int[] mazeDimensions = new int[]{50, 50};
@@ -50,8 +49,21 @@ public class RunCommunicateWithServers {
 
                         byte[] compressedMaze = (byte[]) fromServer.readObject();
 
+                        // Extract rows and columns from first 8 bytes
+                        ByteArrayInputStream byteIn = new ByteArrayInputStream(compressedMaze);
+                        byte[] header = new byte[8];
+                        byteIn.read(header);
+
+                        int rows = 0, cols = 0;
+                        for (int i = 0; i < 4; i++) {
+                            rows |= (header[i] & 0xFF) << (i * 8);
+                            cols |= (header[4 + i] & 0xFF) << (i * 8);
+                        }
+
+                        int totalSize = rows * cols + 24; // This is what Maze constructor expects
+                        byte[] decompressedMaze = new byte[totalSize];
+
                         InputStream is = new MyDecompressorInputStream(new ByteArrayInputStream(compressedMaze));
-                        byte[] decompressedMaze = new byte[4 * 6 + 50 * 50]; // 24 header + data
                         is.read(decompressedMaze);
 
                         Maze maze = new Maze(decompressedMaze);
@@ -67,6 +79,7 @@ public class RunCommunicateWithServers {
             e.printStackTrace();
         }
     }
+
 
     private static void CommunicateWithServer_SolveSearchProblem() {
         try {
