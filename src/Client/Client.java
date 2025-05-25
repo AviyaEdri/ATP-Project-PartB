@@ -2,6 +2,7 @@ package Client;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 
 /**
@@ -9,11 +10,11 @@ import java.net.Socket;
  * This class is responsible for defining the client-side strategy for handling input and output streams.
  */
 public class Client{
-    private String IP;
+    private InetAddress IP;
     private int serverPort;
     private IClientStrategy clientStrategy;
 
-    public Client(String IP, int serverPort, IClientStrategy clientStrategy) {
+    public Client(InetAddress IP, int serverPort, IClientStrategy clientStrategy) {
         this.IP = IP;
         this.serverPort = serverPort;
         this.clientStrategy = clientStrategy;

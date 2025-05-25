@@ -7,7 +7,7 @@ import algorithms.search.*;
 
 public class ServerStrategySolveSearchProblem implements IServerStrategy{
     @Override
-    public void applyStrategy(InputStream in, OutputStream out) {
+    public void serverStrategy(InputStream in, OutputStream out) {
         try{
             ObjectInputStream input = new ObjectInputStream(in);
             ObjectOutputStream output = new ObjectOutputStream(out);

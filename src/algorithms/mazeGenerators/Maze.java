@@ -41,8 +41,8 @@ public class Maze implements Serializable {
         for (int i = 0; i < 4; i++) {
             columns |= (byteArray[index++] & 0xFF) << (i * 8);
         }
-        int size = (rows * columns) +  24; // Calculate the size of the maze
-        if (byteArray.length != size) {
+        int size = rows * columns +  24; // Calculate the size of the maze
+        if (byteArray.length < size) {
             throw new IllegalArgumentException("Invalid byte array size"); // Check if the byte array size is valid
         }
 

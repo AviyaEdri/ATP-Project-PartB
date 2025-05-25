@@ -4,5 +4,5 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public interface IServerStrategy {
-    public void applyStrategy(InputStream in, OutputStream out);
+    public void serverStrategy(InputStream in, OutputStream out);
 }

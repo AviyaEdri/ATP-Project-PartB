@@ -9,7 +9,8 @@ public class Configuration {
 
     private Configuration(){
         properties = new Properties(); // Initialize properties
-        try(InputStream in = getClass().getResourceAsStream("resources/config.properties")) { // Load properties from file
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream("config.properties"))
+        { // Load properties from file
             if (in == null) {
                 throw new RuntimeException("Unable to find config.properties file"); // Check if file is found
             }

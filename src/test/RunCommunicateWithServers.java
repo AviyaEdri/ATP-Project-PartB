@@ -35,45 +35,35 @@ public class RunCommunicateWithServers {
 
     public static void CommunicateWithServer_MazeGenerating() {
         try {
-            Client client = new Client(InetAddress.getLocalHost().getHostAddress(), 5400, new IClientStrategy() {
-                @Override
-                public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
-                    try {
-                        ObjectOutputStream toServer = new ObjectOutputStream(outToServer);
-                        ObjectInputStream fromServer = new ObjectInputStream(inFromServer);
-                        toServer.flush();
+            Client client = new Client(InetAddress.getLocalHost(), 5400, new
+                    IClientStrategy() {
+                        @Override
+                        public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
+                            try {
+                                ObjectOutputStream toServer = new
+                                        ObjectOutputStream(outToServer);
+                                ObjectInputStream fromServer = new
+                                        ObjectInputStream(inFromServer);
+                                toServer.flush();
+                                int[] mazeDimensions = new int[]{50, 50};
+                                toServer.writeObject(mazeDimensions); //send mazedimensions to server
+                                toServer.flush();
+                                byte[] compressedMaze = (byte[]) fromServer.readObject(); //read generated maze (compressed withMyCompressor) from server
+                                InputStream is = new MyDecompressorInputStream(new ByteArrayInputStream(compressedMaze));
 
-                        int[] mazeDimensions = new int[]{50, 50};
-                        toServer.writeObject(mazeDimensions);
-                        toServer.flush();
+                                int rows = mazeDimensions[0];
+                                int cols = mazeDimensions[1];
+                                int decompressedSize = 8 + rows * cols + 16; // 24 = 6 ints * 4 bytes
+                                byte[] decompressedMaze = new byte[decompressedSize];
 
-                        byte[] compressedMaze = (byte[]) fromServer.readObject();
-
-                        // Extract rows and columns from first 8 bytes
-                        ByteArrayInputStream byteIn = new ByteArrayInputStream(compressedMaze);
-                        byte[] header = new byte[8];
-                        byteIn.read(header);
-
-                        int rows = 0, cols = 0;
-                        for (int i = 0; i < 4; i++) {
-                            rows |= (header[i] & 0xFF) << (i * 8);
-                            cols |= (header[4 + i] & 0xFF) << (i * 8);
+                                is.read(decompressedMaze); //Fill decompressedMaze
+                                Maze maze = new Maze(decompressedMaze);
+                                maze.print();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
-
-                        int totalSize = rows * cols + 24; // This is what Maze constructor expects
-                        byte[] decompressedMaze = new byte[totalSize];
-
-                        InputStream is = new MyDecompressorInputStream(new ByteArrayInputStream(compressedMaze));
-                        is.read(decompressedMaze);
-
-                        Maze maze = new Maze(decompressedMaze);
-                        maze.print();
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
+                    });
             client.communicateWithServer();
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -83,7 +73,7 @@ public class RunCommunicateWithServers {
 
     private static void CommunicateWithServer_SolveSearchProblem() {
         try {
-            Client client = new Client(InetAddress.getLocalHost().getHostAddress(), 5401, new IClientStrategy() {
+            Client client = new Client(InetAddress.getLocalHost(), 5401, new IClientStrategy() {
                 @Override
                 public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
                     try {
@@ -119,7 +109,7 @@ public class RunCommunicateWithServers {
     }
     private static void CommunicateWithServer_StringReverser() {
         try {
-            Client client = new Client(InetAddress.getLocalHost().getHostAddress(), 5402, new IClientStrategy() {
+            Client client = new Client(InetAddress.getLocalHost(), 5402, new IClientStrategy() {
                 @Override
                 public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
                     try {

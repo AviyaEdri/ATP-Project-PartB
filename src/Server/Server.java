@@ -43,7 +43,7 @@ public class Server {
     private void handleClient(Socket clientSocket) {
         try (InputStream in = clientSocket.getInputStream(); // Get the input stream from the client socket
              OutputStream out = clientSocket.getOutputStream()) { // Get the output stream from the client socket
-            serverStrategy.applyStrategy(in, out); // Apply the server strategy
+            serverStrategy.serverStrategy(in, out); // Apply the server strategy
         } catch (IOException e) {
             e.printStackTrace(); // Print the stack trace for any IO exceptions
         } finally {

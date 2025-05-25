@@ -12,7 +12,7 @@ import Server.Configuration;
 public class ServerStrategyGenerateMaze implements IServerStrategy {
 
     @Override
-    public void applyStrategy(InputStream in, OutputStream out) {
+    public void serverStrategy(InputStream in, OutputStream out) {
         try {
             ObjectInputStream inputStream = new ObjectInputStream(in); // Create an ObjectInputStream to read the maze dimensions
             ObjectOutputStream outputStream = new ObjectOutputStream(out); // Create an ObjectOutputStream to write the maze
