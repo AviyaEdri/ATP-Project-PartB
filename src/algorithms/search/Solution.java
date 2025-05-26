@@ -35,10 +35,6 @@ public class Solution implements Serializable{
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (AState state : solutionPath) {
-            sb.append(state.toString()).append("\n");
-        }
-        return sb.toString();
+        return "";
     }
 }

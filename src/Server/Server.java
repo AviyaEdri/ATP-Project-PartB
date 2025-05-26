@@ -1,49 +1,59 @@
 package Server;
 
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Server {
     private int port;
-    private int ListeningIntervalMS;
-    private IServerStrategy serverStrategy;
-    private boolean stop;
+    private int listeningIntervalMS;
+    private IServerStrategy strategy;
+    private volatile boolean stop;
     private ExecutorService threadPool;
+    private ServerSocket serverSocket;
 
-    public Server(int port, int ListeningIntervalMS, IServerStrategy serverStrategy) {// Constructor implementation
-        this.port = port; // Set the port number
-        this.ListeningIntervalMS = ListeningIntervalMS; // Set the listening interval
-        this.serverStrategy = serverStrategy; // Set the server strategy
+    public Server(int port, int listeningIntervalMS, IServerStrategy strategy) {
+        this.port = port;
+        this.listeningIntervalMS = listeningIntervalMS;
+        this.strategy = strategy;
+        this.stop = false;
     }
 
-    public void start(){
-        stop = false; // Initialize the stop flag to false
-        threadPool = Executors.newFixedThreadPool(Configuration.getInstance().getThereadPoolSize()); // Create a thread pool with the specified size
-        new Thread(this::runServer).start(); // Start the server in a new thread
+    public void start() {
+        threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        new Thread(this::runServer).start();
     }
 
     private void runServer() {
-        try (ServerSocket serverSocket = new ServerSocket(port)) { // Create a server socket
-            System.out.println("Server started on port " + port); // Print the server start message
-            while (!stop) { // Loop until the stop flag is set to true
+        try {
+            serverSocket = new ServerSocket(port);
+            System.out.println("Server started on port " + port);
+
+            while (!stop) {
                 try {
-                    Socket clientSocket = serverSocket.accept(); // Accept a client connection
-                    threadPool.execute(() -> handleClient(clientSocket)); // Handle the client in a separate thread
-                } catch (SocketTimeoutException e) {
-                    // Ignore timeout exceptions
+                    Socket clientSocket = serverSocket.accept();
+                    threadPool.execute(() -> handleClient(clientSocket));
+                } catch (IOException e) {
+                    if (!stop) {
+                        e.printStackTrace();
+                    }
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace(); // Print the stack trace for any IO exceptions
+            e.printStackTrace();
         }
     }
+
 
     private void handleClient(Socket clientSocket) {
         try (InputStream in = clientSocket.getInputStream(); // Get the input stream from the client socket
              OutputStream out = clientSocket.getOutputStream()) { // Get the output stream from the client socket
-            serverStrategy.serverStrategy(in, out); // Apply the server strategy
+            strategy.serverStrategy(in, out); // Apply the server strategy
         } catch (IOException e) {
             e.printStackTrace(); // Print the stack trace for any IO exceptions
         } finally {
@@ -55,14 +65,29 @@ public class Server {
         }
     }
 
+
     public void stop() {
-        stop = true; // Set the stop flag to true
-        threadPool.shutdown(); // Shutdown the thread pool
-        System.out.println("Server on port " + port +" stopped"); // Print the server stop message
-        try {
-            threadPool.awaitTermination(ListeningIntervalMS, java.util.concurrent.TimeUnit.MILLISECONDS); // Wait for the threads to finish
-        } catch (InterruptedException e) {
-            e.printStackTrace(); // Print the stack trace for any interrupted exceptions
+        stop = true;
+        if (serverSocket != null && !serverSocket.isClosed()) {
+            try {
+                serverSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+
+        if (threadPool != null) {
+            threadPool.shutdown();
+            try {
+                if (!threadPool.awaitTermination(listeningIntervalMS, TimeUnit.MILLISECONDS)) {
+                    threadPool.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                threadPool.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        System.out.println("Server on port " + port + " stopped");
     }
 }
