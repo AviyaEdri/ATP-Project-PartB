@@ -1,6 +1,7 @@
 package algorithms.mazeGenerators;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Position implements Serializable {
     private int row; // Row index of the position
@@ -16,6 +17,7 @@ public class Position implements Serializable {
         this.row = row; // Set the row index
         this.column = column; // Set the column index
     }
+
     public int getRowIndex(){
         return row; // Return the row index
     }
@@ -23,22 +25,22 @@ public class Position implements Serializable {
         return column; // Return the column index
     }
 
-    public boolean equals(Position position) {
-        if (row == position.getRowIndex() && column == position.getColumnIndex()){
-            return true;
-        }
-        return false;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Position)) return false;
+        Position that = (Position) o;
+        return row == that.row && column == that.column;
     }
 
-    /**
-     * Returns a string representation of the position in the format "{row,column}".
-     *
-     * @return A string representation of the position.
-     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(row, column);
+    }
+
     @Override
     public String toString() {
-        return "{" + row + "," + column + "}"; // Format the position as "{row,column}"
+        return "{" + row + "," + column + "}";
     }
-
 
 }

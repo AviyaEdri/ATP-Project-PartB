@@ -15,6 +15,16 @@ public class Solution implements Serializable{
         solutionPath = new ArrayList<>();
     }
 
+    public Solution(AState goal) {
+        solutionPath = new ArrayList<>();
+        AState current = goal;
+        while (current != null) {
+            solutionPath.add(0, current); // Add the current state to the beginning of the path
+            current = current.getCameFrom(); // Move to the previous state
+        }
+    }
+
+
     public void setSolutionPath(ArrayList<AState> path) {
         this.solutionPath = path;
     }

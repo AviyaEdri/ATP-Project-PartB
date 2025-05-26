@@ -31,7 +31,7 @@ public abstract class AState implements Serializable {
     }
 
     public AState getCameFrom() {
-        return cameFrom;
+        return this.cameFrom;
     }
 
     public void setCameFrom(AState cameFrom) {
@@ -43,18 +43,18 @@ public abstract class AState implements Serializable {
         return state;
     }
 
-    @Override
-    public boolean equals(Object other){
-        if (!(other instanceof AState))
-            return false;
-        AState state = (AState) other;
-        return this.state.equals(state.state);
-    }
+//    @Override
+//    public boolean equals(Object other){
+//        if (!(other instanceof AState))
+//            return false;
+//        AState state = (AState) other;
+//        return this.state.equals(state.state);
+//    }
 
-    @Override
-    public int hashCode(){
-        return state.hashCode();
-    }
+//    @Override
+//    public int hashCode(){
+//        return state.hashCode();
+//    }
 
 
 }
