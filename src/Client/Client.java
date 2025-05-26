@@ -22,7 +22,7 @@ public class Client{
 
     public void start(){
         try(Socket serverSocket = new Socket(IP, serverPort)) { // Create a socket to connect to the server
-           System.out.println("connected to server - IP: "+ IP + ", Port: " + serverPort); // Print the connection message
+            System.out.println("connected to server - IP: "+ IP + ", Port: " + serverPort); // Print the connection message
             InputStream in = serverSocket.getInputStream(); // Get the input stream from the socket
             OutputStream out = serverSocket.getOutputStream(); // Get the output stream from the socket
             clientStrategy.clientStrategy(in, out); // Call the client strategy method with the input and output streams

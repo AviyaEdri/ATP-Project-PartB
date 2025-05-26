@@ -1,102 +1,66 @@
 package algorithms.mazeGenerators;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
-/**
- * This class generates a maze using the Prim's algorithm.
- * The maze is represented as a 2D array filled with walls (1) and empty cells (0).
- */
 public class MyMazeGenerator extends AMazeGenerator {
     @Override
-    public Maze generate(int rows, int columns) {
-        int col = columns * 2 + 1;
-        int row = rows * 2 + 1;
-        int[][] maze = new int[row][col]; // Initialize the maze array
+    public Maze generate(int rows, int cols) {
+        int height = rows * 2 + 1;
+        int width = cols * 2 + 1;
+        int[][] maze = new int[height][width];
+        for (int[] row : maze) Arrays.fill(row, 1);
 
-        for (int i = 0; i < row; i++) {
-            Arrays.fill(maze[i], 1); // Fill the maze with walls (1)
-        }
-        Random random = new Random(); // Create a random number generator
-        int startRow = random.nextInt(rows) * 2 + 1; // Random starting row
-        int startCol = random.nextInt(columns) * 2 + 1; // Random starting column
-        maze[startRow][startCol] = 0; // Set the starting cell to empty (0)
+        Random rand = new Random();
+        int startRow = 2 * rand.nextInt(rows) + 1;
+        int startCol = 2 * rand.nextInt(cols) + 1;
 
-        List<int[]> walls = new ArrayList<>(); // List to store walls
-        addWalls(maze, startRow, startCol, walls); // Add walls around the starting cell
+        maze[startRow][startCol] = 0;
+        List<int[]> walls = new ArrayList<>();
+        addWalls(maze, startRow, startCol, walls);
 
         while (!walls.isEmpty()) {
-            int[] wall = walls.remove(random.nextInt(walls.size())); // Randomly select a wall
-            int wallRow = wall[0]; // Wall row
-            int wallCol = wall[1]; // Wall column
+            int[] wall = walls.remove(rand.nextInt(walls.size()));
+            int wallRow = wall[0], wallCol = wall[1];
+            int[][] neighbors = getNeighbors(wallRow, wallCol, maze);
+            if (neighbors == null) continue;
 
-            int[][] neighbors = getNeighbors(wallRow, wallCol, maze); // Get neighbors of the wall
-            if (neighbors == null) continue; // No neighbors, skip
-
-            int[] cell1 = neighbors[0]; // First neighbor
-            int[] cell2 = neighbors[1]; // Second neighbor
-
+            int[] cell1 = neighbors[0], cell2 = neighbors[1];
             if (maze[cell1[0]][cell1[1]] == 0 && maze[cell2[0]][cell2[1]] == 1) {
-                maze[cell2[0]][cell2[1]] = 0; // Set the second neighbor to empty (0)
-                maze[(wallRow + cell2[0]) / 2][(wallCol + cell2[1]) / 2] = 0; // Set the wall to empty (0)
-                addWalls(maze, cell2[0], cell2[1], walls); // Add walls around the new cell
+                maze[cell2[0]][cell2[1]] = 0;
+                maze[(wallRow + cell2[0]) / 2][(wallCol + cell2[1]) / 2] = 0;
+                addWalls(maze, cell2[0], cell2[1], walls);
             } else if (maze[cell1[0]][cell1[1]] == 1 && maze[cell2[0]][cell2[1]] == 0) {
-                maze[cell1[0]][cell1[1]] = 0; // Set the first neighbor to empty (0)
-                maze[(wallRow + cell1[0]) / 2][(wallCol + cell1[1]) / 2] = 0; // Set the wall to empty (0)
-                addWalls(maze, cell1[0], cell1[1], walls); // Add walls around the new cell
+                maze[cell1[0]][cell1[1]] = 0;
+                maze[(wallRow + cell1[0]) / 2][(wallCol + cell1[1]) / 2] = 0;
+                addWalls(maze, cell1[0], cell1[1], walls);
             }
         }
 
-        // Choose random internal cells for start and goal
-        Position innerStart = getRandomOpenCell(maze, random);
-        Position innerGoal = getRandomOpenCell(maze, random);
-        while (innerGoal.equals(innerStart)) {
-            innerGoal = getRandomOpenCell(maze, random);
-        }
+        Position innerStart = new Position(startRow, startCol);
+        Position innerGoal = findFurthestCell(maze, innerStart);
+        Position start = tunnelToEdge(innerStart, maze);
+        Position goal = tunnelToEdge(innerGoal, maze);
 
-        // Open entrance/exit on edge near inner cells
-        Position start = openEdgeNear(innerStart, maze);
-        Position goal = openEdgeNear(innerGoal, maze);
-
-        Maze Mymaze = new Maze(row, col);
-        Mymaze.setMaze(maze); // Set the maze array in the maze object
-        Mymaze.setStartPosition(start);
-        Mymaze.setGoalPosition(goal);
-        return Mymaze;
-
-    }
-
-    @Override
-    public boolean possiblePath(Maze maze) {
-        return false;
+        Maze result = new Maze(height, width);
+        result.setMaze(maze);
+        result.setStartPosition(start);
+        result.setGoalPosition(goal);
+        return result;
     }
 
     private void addWalls(int[][] maze, int row, int col, List<int[]> walls) {
-        int[][] directions = {
-                {-2, 0}, {2, 0}, {0, -2}, {0, 2}
-        };
+        int[][] directions = {{-2, 0}, {2, 0}, {0, -2}, {0, 2}};
         for (int[] dir : directions) {
-            int newRow = row + dir[0];
-            int newCol = col + dir[1];
+            int newRow = row + dir[0], newCol = col + dir[1];
             if (newRow > 0 && newRow < maze.length && newCol > 0 && newCol < maze[0].length) {
-                int wallRow = row + dir[0] / 2;
-                int wallCol = col + dir[1] / 2;
+                int wallRow = row + dir[0] / 2, wallCol = col + dir[1] / 2;
                 if (maze[newRow][newCol] == 1) {
                     walls.add(new int[]{wallRow, wallCol});
                 }
             }
         }
     }
-    /**
-     * Get the neighbors of a wall cell.
-     *
-     * @param row the row index of the wall
-     * @param col the column index of the wall
-     * @param maze the maze array
-     * @return an array of neighbor positions
-     */
+
     private int[][] getNeighbors(int row, int col, int[][] maze) {
         if (row % 2 == 1 && col % 2 == 0) {
             return new int[][]{{row, col - 1}, {row, col + 1}};
@@ -105,48 +69,53 @@ public class MyMazeGenerator extends AMazeGenerator {
         }
         return null;
     }
-    /**
-     * Get a random open cell in the maze.
-     *
-     * @param maze the maze array
-     * @param rand the random number generator
-     * @return a Position object representing the random open cell
-     */
-    private Position getRandomOpenCell(int[][] maze, Random rand) {
-        int row, col;
-        do {
-            row = 2 * rand.nextInt((maze.length - 1) / 2) + 1;
-            col = 2 * rand.nextInt((maze[0].length - 1) / 2) + 1;
-        } while (maze[row][col] != 0);
-        return new Position(row, col);
-    }
-    /**
-     * Open an edge near the given cell in the maze.
-     *
-     * @param cell the cell position
-     * @param maze the maze array
-     * @return a Position object representing the opened edge
-     */
-    private Position openEdgeNear(Position cell, int[][] maze) {
-        int row = cell.getRowIndex();
-        int col = cell.getColumnIndex();
 
-        if (row == 1) {
-            maze[0][col] = 0;
-            return new Position(0, col);
-        } else if (row == maze.length - 2) {
-            maze[maze.length - 1][col] = 0;
-            return new Position(maze.length - 1, col);
-        } else if (col == 1) {
-            maze[row][0] = 0;
-            return new Position(row, 0);
-        } else if (col == maze[0].length - 2) {
-            maze[row][maze[0].length - 1] = 0;
-            return new Position(row, maze[0].length - 1);
+    private Position findFurthestCell(int[][] maze, Position start) {
+        int rows = maze.length, cols = maze[0].length;
+        boolean[][] visited = new boolean[rows][cols];
+        Queue<Position> queue = new LinkedList<>();
+        queue.add(start);
+        visited[start.getRowIndex()][start.getColumnIndex()] = true;
+        Position furthest = start;
+
+        int[][] directions = {{1,0},{-1,0},{0,1},{0,-1}};
+        while (!queue.isEmpty()) {
+            Position current = queue.poll();
+            furthest = current;
+            for (int[] d : directions) {
+                int newRow = current.getRowIndex() + d[0];
+                int newCol = current.getColumnIndex() + d[1];
+                if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols &&
+                        maze[newRow][newCol] == 0 && !visited[newRow][newCol]) {
+                    visited[newRow][newCol] = true;
+                    queue.add(new Position(newRow, newCol));
+                }
+            }
         }
+        return furthest;
+    }
 
-        // fallback
+    private Position tunnelToEdge(Position from, int[][] maze) {
+        int row = from.getRowIndex();
+        int col = from.getColumnIndex();
+        int[][] directions = {{-1,0}, {1,0}, {0,-1}, {0,1}};
+        for (int[] dir : directions) {
+            int r = row, c = col;
+            while (r > 0 && r < maze.length - 1 && c > 0 && c < maze[0].length - 1) {
+                r += dir[0];
+                c += dir[1];
+                maze[r][c] = 0;
+                if (r == 0 || c == 0 || r == maze.length - 1 || c == maze[0].length - 1) {
+                    return new Position(r, c);
+                }
+            }
+        }
         maze[row][0] = 0;
         return new Position(row, 0);
+    }
+
+    @Override
+    public boolean possiblePath(Maze maze) {
+        return false;
     }
 }

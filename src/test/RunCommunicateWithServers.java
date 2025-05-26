@@ -1,5 +1,3 @@
-package test;
-
 import Client.IClientStrategy;
 import IO.MyDecompressorInputStream;
 import Server.*;
@@ -48,7 +46,7 @@ public class RunCommunicateWithServers {
                         toServer.flush();
                         byte[] compressedMaze = (byte[]) fromServer.readObject(); //read generated maze (compressed withMyCompressor) from server
                         InputStream is = new MyDecompressorInputStream(new ByteArrayInputStream(compressedMaze));
-                        byte[] decompressedMaze = new byte[8 + (mazeDimensions[0] * mazeDimensions[1] + 7 / 8) + 16];
+                        byte[] decompressedMaze = new byte[40250]; // 50*50*4 + 8 bytes for start and goal positions
                         //allocating byte[] for the decompressed maze
                         is.read(decompressedMaze);
                         // Fill decompressedMaze with bytes
@@ -78,11 +76,15 @@ public class RunCommunicateWithServers {
                         MyMazeGenerator mg = new MyMazeGenerator();
                         Maze maze = mg.generate(50, 50);
                         //maze.print();
+                        //System.out.println("START: " + maze.getStartPosition());
+                        //System.out.println("GOAL: " + maze.getGoalPosition());
+
                         toServer.writeObject(maze); //send maze to server
                         toServer.flush();
                         Solution mazeSolution = (Solution) fromServer.readObject(); //read generated maze (compressed with MyCompressor) from server
                         //Print Maze Solution retrieved from the server
-                        System.out.println(String.format("Solution steps:%s", mazeSolution));
+                        System.out.println(String.format("Solution steps:"));
+
                         ArrayList<AState> mazeSolutionSteps = mazeSolution.getSolutionPath();
                         for (int i = 0; i < mazeSolutionSteps.size(); i++) {
                             System.out.println(String.format("%s. %s", i, mazeSolutionSteps.get(i).toString()));
