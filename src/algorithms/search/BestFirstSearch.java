@@ -54,19 +54,6 @@ public class BestFirstSearch extends ASearchingAlgorithm {
         }
         Solution sol = new Solution();
         sol.setSolutionPath(path);
-        // Optionally, you can print the solution path
-        //System.out.println("Best First Search Solution Path:");
-        //System.out.println(String.format("Best First Search evaluated %d nodes", numberOfNodesEvaluated));
-        System.out.println("SERVER: Building solution path from goal: " + goalState);
-        int count = 0;
-        AState curr = goalState;
-        while (curr != null) {
-            System.out.println(" ← " + curr);
-            current = current.getCameFrom();
-            count++;
-        }
-        System.out.println("SERVER: Path length = " + count);
-
         return sol;
     }
 }
